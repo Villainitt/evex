@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:evex/telas/professor/perfil_professor.dart';
 import 'package:evex/telas/professor/tela_professor.dart';
+import 'package:evex/telas/professor/cadastro_eventos.dart';
 
 class TelaPesquisaProfessor extends StatefulWidget {
   const TelaPesquisaProfessor({Key? key, this.paginaAtual = 1}) : super(key: key);
@@ -34,6 +35,9 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
       case 2:
         proximaTela = PerfilProfessor(paginaAtual: 2);
         break;
+         case 3:
+          proximaTela = CadastrarEventoScreen(paginaAtual: 3);
+          break;
       default:
         return;
     }
@@ -75,7 +79,8 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
         backgroundColor: const Color(0xFFFCB500),
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SafeArea(
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -110,7 +115,8 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
               child: const Text('Buscar'),
             ),
             const SizedBox(height: 20),
-            Expanded(
+            SizedBox(
+              height: 300,
               child: resultados.isEmpty
                   ? const Text('Nenhum resultado encontrado.')
                   : ListView.builder(
@@ -128,6 +134,7 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
             ),
           ],
         ),
+      ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.paginaAtual,

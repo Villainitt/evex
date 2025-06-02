@@ -21,12 +21,21 @@ class _VerificaTipoPageState extends State<VerificaTipoPage> {
 
   void _verificarTipo() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
+    if (user == null || user.email == null) {
+      if (mounted) {
+        showSnackBar(
+          context: context,
+          aviso: 'Usuário não autenticado ou sem email.',
+        );
+      }
+      return;
+    }
     final email = user.email;
 
     try {
-      final uri = Uri.parse('https://email-api-v80f.onrender.com/identificarUsuario');
+      final uri = Uri.parse(
+        'https://email-api-v80f.onrender.com/identificarUsuario',
+      );
       final response = await http.post(
         uri,
         headers: {'Content-Type': 'application/json'},
@@ -38,27 +47,36 @@ class _VerificaTipoPageState extends State<VerificaTipoPage> {
         final tipo = data['tipo'];
 
         if (tipo == 'aluno') {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => InicialTela(paginaAtual: 0)));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => InicialTela(paginaAtual: 0)),
+          );
         } else if (tipo == 'admin') {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => TelaProfessor(paginaAtual: 0)));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => TelaProfessor(paginaAtual: 0)),
+          );
         } else {
-          showSnackBar(context: context, aviso: 'Tipo de usuário desconhecido.');
+          showSnackBar(
+            context: context,
+            aviso: 'Tipo de usuário desconhecido.',
+          );
         }
       } else {
         showSnackBar(context: context, aviso: 'Erro ao identificar usuário.');
       }
     } catch (e) {
       if (mounted) {
-        showSnackBar(context: context, aviso: 'Erro na comunicação com o servidor.');
+        showSnackBar(
+          context: context,
+          aviso: 'Erro na comunicação com o servidor.',
+        );
       }
-      
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

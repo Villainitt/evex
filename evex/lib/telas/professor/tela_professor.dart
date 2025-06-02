@@ -25,8 +25,8 @@ class TelaProfessor extends StatelessWidget {
           proximaTela = TelaProfessor(paginaAtual: 0);
           break;
         case 1:
-      proximaTela = TelaPesquisaProfessor(paginaAtual: 1);
-      break;
+          proximaTela = TelaPesquisaProfessor(paginaAtual: 1);
+          break;
         case 2:
           proximaTela = PerfilProfessor(paginaAtual: 2);
           break;

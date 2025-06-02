@@ -82,7 +82,8 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
         backgroundColor: const Color(0xFFFCB500),
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SafeArea(
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -145,7 +146,8 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
               child: const Text('Buscar'),
             ),
             const SizedBox(height: 20),
-            Expanded(
+            SizedBox(
+              height: 300,
               child:
                   resultados.isEmpty
                       ? const Text('Nenhum resultado encontrado.')
@@ -163,6 +165,7 @@ class _TelaPesquisaState extends State<TelaPesquisa> {
                       ),
             ),
           ],
+        ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
