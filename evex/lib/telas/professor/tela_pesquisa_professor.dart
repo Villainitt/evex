@@ -5,9 +5,10 @@ import 'package:evex/telas/professor/perfil_professor.dart';
 import 'package:evex/telas/professor/tela_professor.dart';
 import 'package:evex/telas/professor/cadastro_eventos.dart';
 
+// Widget para a tela de pesquisa, navegação via bottomNavigationBar
+//paginaAtual: índice da página para navegação
 class TelaPesquisaProfessor extends StatefulWidget {
   const TelaPesquisaProfessor({Key? key, this.paginaAtual = 1}) : super(key: key);
-
   final int paginaAtual;
 
   @override
@@ -15,12 +16,17 @@ class TelaPesquisaProfessor extends StatefulWidget {
 }
 
 class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
+  //controllers para pesquisa nome e local
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _localController = TextEditingController();
+
+  //pesquisa por tipos ou categorias são feitas por seleção de categoria (não são digitadas pelo usuário)
   String? _categoriaSelecionada;
 
+  //lista de resultados
   List<Map<String, dynamic>> resultados = [];
 
+  // função para navegação entre páginas, cada case é uma página
   void _navegar(BuildContext context, int index) {
     if (index == widget.paginaAtual) return;
 
@@ -41,36 +47,38 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
       default:
         return;
     }
+    //dependendo do que for selecionado ele redireciona para a tela correspondente
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => proximaTela),
     );
   }
-
+  // essa função é a de pesquisa dos eventos, ela espera que o usuário digite algo para poder realizar a pesquisa
   Future<void> pesquisarEventos() async {
+    //aqui instancia o banco de dados para realizar a pesquisa
     Query query = FirebaseFirestore.instance.collection('eventos');
-
+    //pesquisa por nome
     if (_nomeController.text.isNotEmpty) {
       query = query
           .where('nome', isGreaterThanOrEqualTo: _nomeController.text)
           .where('nome', isLessThanOrEqualTo: _nomeController.text + '\uf8ff');
     }
-
+    //pesquisa por local
     if (_localController.text.isNotEmpty) {
       query = query.where('local', isEqualTo: _localController.text);
     }
-
+    //pesquisa por tipo 
     if (_categoriaSelecionada != null && _categoriaSelecionada!.isNotEmpty) {
       query = query.where('categoria', isEqualTo: _categoriaSelecionada);
     }
-
+    //usa o get para pegar os resultados correspondentes à pesquisa
     final snapshot = await query.get();
-
+    //mostra o resultado numa lista (caso tenha mais de 1 resultado)
     setState(() {
       resultados = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
     });
   }
-
+  //aqui é a parte de interface mesmo  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,10 +102,11 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
               decoration: const InputDecoration(labelText: 'Local'),
             ),
             const SizedBox(height: 10),
+            //"formulário" para seleção dos tipos
             DropdownButtonFormField<String>(
               value: _categoriaSelecionada,
               hint: const Text('Categoria'),
-              items: ['Palestra', 'Oficina', 'Encontro']
+              items: ['Palestra', 'Oficina', 'Encontro', 'Workshop']
                   .map((categoria) => DropdownMenuItem(
                         value: categoria,
                         child: Text(categoria),
@@ -115,6 +124,8 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
               child: const Text('Buscar'),
             ),
             const SizedBox(height: 20),
+            //aqui se não tiver nenhum resultado ele retorna a mensagem, se encontrar resultados retorna o nome do evento, 
+            //local e data
             SizedBox(
               height: 300,
               child: resultados.isEmpty
@@ -136,10 +147,13 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
         ),
       ),
       ),
+      //é o "footer" usado para navegação
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: widget.paginaAtual,
         onTap: (index) => _navegar(context, index),
         selectedItemColor: const Color(0xFFFCB500),
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -152,6 +166,10 @@ class _TelaPesquisaProfessorState extends State<TelaPesquisaProfessor> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Perfil',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit),
+            label: 'Criar Evento',
           ),
         ],
       ),

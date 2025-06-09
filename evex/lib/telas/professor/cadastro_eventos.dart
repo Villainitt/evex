@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evex/telas/professor/perfil_professor.dart';
 import 'package:evex/telas/professor/tela_professor.dart';
+import 'package:evex/telas/professor/tela_pesquisa_professor.dart';
 import 'package:evex/servicos/verificar_id_evento.dart';
 
 class CadastrarEventoScreen extends StatefulWidget {
@@ -19,17 +20,20 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
 
   Widget proximaTela;
   switch (index) {
-    case 0:
-      proximaTela = TelaProfessor(paginaAtual: 0);
-      break;
-    case 2:
-      proximaTela = PerfilProfessor(paginaAtual: 2);
-      break;
-    case 3:
-      proximaTela = CadastrarEventoScreen(paginaAtual: 3);
-      break;
-    default:
-      return;
+     case 0:
+        proximaTela = TelaProfessor(paginaAtual: 0);
+        break;
+      case 1:
+        proximaTela = TelaPesquisaProfessor(paginaAtual: 1);
+        break;
+      case 2:
+        proximaTela = PerfilProfessor(paginaAtual: 2);
+        break;
+         case 3:
+          proximaTela = CadastrarEventoScreen(paginaAtual: 3);
+          break;
+      default:
+        return;
   }
 
   Navigator.pushReplacement(
@@ -38,7 +42,7 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
   );
 }
 
-
+  // controllers para todas os detalhes que o professor deve preencher sobre o evento
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController localController = TextEditingController();
   final TextEditingController descricaoController = TextEditingController();
@@ -48,11 +52,13 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
   final TextEditingController modalidadeController = TextEditingController();
   final TextEditingController salaController = TextEditingController();
 
+  //instancia do firestore
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  
+  //date e time picker  
   DateTime? dataSelecionada;
   TimeOfDay? horarioSelecionado;
-
+  // função que verifica se todos os campos estão preenchidos
   Future<void> cadastrarEvento() async {
     if (nomeController.text.isEmpty ||
         dataSelecionada == null ||
@@ -68,9 +74,11 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
       return;
     }
 
-    try {
-      String idEvento = await VerificarIdEvento.gerarIdUnico();
 
+    try {
+      //chama a função gerarId para gerar o id nos padrões EVXX, ex: EV10
+      String idEvento = await VerificarIdEvento.gerarIdUnico();
+      //cadastra todos os dados dos eventos
       await firestore.collection("eventos").doc(idEvento).set({
         "id": idEvento, 
         "nome": nomeController.text,
@@ -89,7 +97,7 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
 
       mostrarMensagem("Evento cadastrado com sucesso!", Colors.green);
 
-      // Limpar campos
+      // limpa os campos
       nomeController.clear();
       localController.clear();
       descricaoController.clear();
@@ -107,7 +115,7 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
       
     }
   }
-
+  // função para mostrar uma snackbar
   void mostrarMensagem(String mensagem, Color cor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -230,7 +238,7 @@ class _CadastrarEventoScreenState extends State<CadastrarEventoScreen> {
     );
   }
 
-
+  // estilização dos campos de texto
   Widget campoDeTexto(TextEditingController controller, String label, {TextInputType tipo = TextInputType.text}) {
     return TextField(
       controller: controller,

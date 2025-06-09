@@ -5,7 +5,7 @@ class ModeloRelatorio extends StatelessWidget {
   final String eventoId;
 
   const ModeloRelatorio({required this.eventoId, super.key});
-
+  //carrega as incrições acessando as coleções 'canceladas' e 'inscricoes'
   Future<Map<String, List<Map<String, dynamic>>>> carregarInscricoes() async {
     final confirmadasSnapshot =
         await FirebaseFirestore.instance
@@ -20,13 +20,13 @@ class ModeloRelatorio extends StatelessWidget {
             .get();
 
     final confirmadas =
-        confirmadasSnapshot.docs.map((doc) => doc.data()).toList();
+        confirmadasSnapshot.docs.map((doc) => doc.data()).toList(); //lista as inscrições confirmadas
     final canceladas =
-        canceladasSnapshot.docs.map((doc) => doc.data()).toList();
+        canceladasSnapshot.docs.map((doc) => doc.data()).toList(); //lista as inscrições canceladas
 
     return {
-      'confirmado': confirmadas, 
-      'cancelada': canceladas
+      'confirmado': confirmadas, //retorna a lista de confirmadas
+      'cancelada': canceladas //retorna a lista de canceladas
     };
   }
 
@@ -44,14 +44,15 @@ class ModeloRelatorio extends StatelessWidget {
       body: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
         future: carregarInscricoes(),
         builder: (context, snapshot) {
+          //carregamento...
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
+          //se não encontrar nenhuma inscrição...
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhuma inscrição encontrada.'));
           }
-
+          //retorna os dados encontrados
           final data = snapshot.data!;
           final confirmados = data['confirmado'] ?? [];
           final canceladas = data['cancelada'] ?? [];

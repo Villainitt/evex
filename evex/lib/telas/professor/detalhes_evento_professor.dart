@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:evex/servicos/localizacao.dart';
 import 'package:evex/servicos/tentar_inscricao.dart';
 
+// Tela de detalhes de um evento obtidos do firestore mapeados
 class DetalhesPage extends StatelessWidget {
   final Map<String, dynamic> dadosEvento;
 
   const DetalhesPage({Key? key, required this.dadosEvento}) : super(key: key);
 
+  // constrói a interface de detalhes do evento
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +109,7 @@ class DetalhesPage extends StatelessWidget {
                     size: 48.0,
                   ),
                   onPressed:
+                  //de acordo com o local do evento, abre o local no maps
                       () => abrirLocalNoMaps(context, dadosEvento['local']),
                 ),
                 const SizedBox(width: 8),
@@ -213,6 +216,7 @@ class DetalhesPage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
 
+            //botão de inscrição
             Center(
               child: Column(
                 children: [
@@ -225,7 +229,7 @@ class DetalhesPage extends StatelessWidget {
                       ),
                       padding: EdgeInsets.symmetric(vertical: 15),
                     ),
-
+                    //botão que chama a função de inscrição
                     onPressed: () => tentarInscricao(context, dadosEvento),
 
                     child: Text(

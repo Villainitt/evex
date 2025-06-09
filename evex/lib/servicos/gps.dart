@@ -1,5 +1,5 @@
 import 'package:geolocator/geolocator.dart';
-
+//acessa a localização do usuário
 class GepasController {
   double lat = 0.0;
   double long = 0.0;
@@ -9,7 +9,7 @@ class GepasController {
     getPosicao();
   }
 
-  
+  //pega a posição do usuário
   getPosicao() async {
     try {
       Position posicao = await _posicaoAtual();
@@ -22,16 +22,16 @@ class GepasController {
 
   
   Future<Position> _posicaoAtual() async {
-    LocationPermission permissao;
+    LocationPermission permissao; //verifica se tem permissão
 
     bool ativado = await Geolocator.isLocationServiceEnabled();
     if (!ativado) {
-      return Future.error("Por favor, habilite a localização no smartphone");
+      return Future.error("Por favor, habilite a localização no smartphone"); //pede para habilitar a localização do telefone
     }
 
     permissao = await Geolocator.checkPermission();
     if (permissao == LocationPermission.denied) {
-      permissao = await Geolocator.requestPermission();
+      permissao = await Geolocator.requestPermission(); //se estiver negada abre novamente a permissão de localização
 
       if (permissao == LocationPermission.denied) {
         return Future.error("Você precisa autorizar o acesso à localização!");
@@ -42,7 +42,7 @@ class GepasController {
       return Future.error("Você precisa autorizar o acesso à localização!");
     }
 
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition();  //se a permissão estiver ok, pega a posição do usuário
   }
 
   

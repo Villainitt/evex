@@ -16,12 +16,13 @@ class _MinhasInscricoesState extends State<MinhasInscricoes> {
   late Future<List<Map<String, dynamic>>> _eventosInscritos;
   String? matricula;
 
+  //inicia o carregamento dos eventos
   @override
   void initState() {
     super.initState();
     _eventosInscritos = carregarEventos();
   }
-
+  //busca os eventos que a matrícula logada está inscrita
   Future<List<Map<String, dynamic>>> carregarEventos() async {
     matricula = await pegarMatricula();
     return await buscarEventosInscritos(matricula!);
@@ -39,21 +40,24 @@ class _MinhasInscricoesState extends State<MinhasInscricoes> {
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _eventosInscritos,
         builder: (context, snapshot) {
+          //inidicador de carregamento
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
+          } else if (snapshot.hasError) { //verificação de erro ao carregar os eventos
             return const Center(child: Text("Erro ao carregar seus eventos"));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) { //se estiver vazio mostra mensagem
             return const Center(child: Text("Nenhum evento encontrado"));
           }
-
+          // mostra os eventos inscritos
           final eventos = snapshot.data!;
 
+          //faz uma lista dos eventos inscritos
           return ListView.builder(
             itemCount: eventos.length,
             itemBuilder: (context, index) {
               final evento = eventos[index];
               return CardEvento(
+                //chama o card evento com o botão de cancelar inscrição
                 nome: evento['nome'] ?? 'Sem nome',
                 local: evento['local'] ?? 'Sem local',
                 data: evento['data'] ?? 'Sem data',

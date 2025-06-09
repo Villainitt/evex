@@ -18,7 +18,7 @@ class _ResetarSenhaState extends State<ResetarSenha> {
       ),
     );
   }
-
+  //função para enviar email para resetar senha ao email digitado
   void enviarEmailReset() async {
     final email = emailController.text.trim();
 
@@ -28,6 +28,7 @@ class _ResetarSenhaState extends State<ResetarSenha> {
     }
 
     try {
+      //envia o email de reset de senha
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       mostrarMensagem(
         'Email de recuperação enviado! Vefique sua caixa de entrada.',

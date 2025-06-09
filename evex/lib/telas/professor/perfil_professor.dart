@@ -39,7 +39,7 @@ class PerfilProfessor extends StatelessWidget {
       MaterialPageRoute(builder: (context) => proximaTela),
     );
   }
-
+// constrói a interface da tela de perfil
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -54,6 +54,7 @@ class PerfilProfessor extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       body: FutureBuilder<QuerySnapshot>(
+        //acessa a coleção professores no firebase e, de acordo com o email, busca os dados relacionados ao email.
         future:
             FirebaseFirestore.instance
                 .collection('professores')
@@ -61,16 +62,27 @@ class PerfilProfessor extends StatelessWidget {
                 .limit(1)
                 .get(),
         builder: (context, snapshot) {
+          // indicador de carregamento
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          // caso dê algum erro, retorna uma mensagem de erro ao usuário
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Erro ao carregar dados do professor.')
+              );
+          }
+          // validação caso não encontre os dados mostra a mensagem ao usuário
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
               child: Text('Dados do professor não encontrados.'),
             );
           }
 
+          
+
+          //extrai os dados do professor a partir do documento retornado
           final doc = snapshot.data!.docs.first;
           final dados = doc.data() as Map<String, dynamic>;
           final matricula = doc.id;
@@ -211,12 +223,12 @@ class PerfilProfessor extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Busca'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           BottomNavigationBarItem(
             icon: Icon(Icons.edit),
-            label: 'Criar evento',
+            label: 'Criar Evento',
           ),
         ],
       ),

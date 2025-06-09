@@ -15,11 +15,13 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  //controllers pra nome, email e senha
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  //função para cadastrar o usuário
   void _signUp() async{
+    //valida o formulário
     if (_formKey.currentState!.validate()) {
       String nome = _nomeController.text;
       String email = _emailController.text;
@@ -28,7 +30,9 @@ class _SignUpPageState extends State<SignUpPage> {
 
 
       print('Nome: $nome,Email: $email, Senha: $password');
+      //cadastra o usuário
       _autenticacaoServ.cadastrarUser(nome: nome, email: email, password: password).then(
+        //se tiver erro mostra uma snackbar com o erro
         (String? erro){
           if (erro != null) {
             showSnackBar(context: context, aviso: erro);
@@ -82,7 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
             
             SizedBox(height: 10),
             
-            // FORMULÁRIO DE LOGIN
+            // formulário de registro
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Form(
@@ -182,6 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                           padding: EdgeInsets.symmetric(vertical: 15),
                         ),
+                        //chama a função de cadastro
                         onPressed: _signUp,
                         child: Text(
                           "Registrar",
@@ -191,7 +196,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     SizedBox(height: 20),
                     
-                    // CADASTRAR
+                    // voltar ao login
                     Center(
                       child: RichText(
                         text: TextSpan(

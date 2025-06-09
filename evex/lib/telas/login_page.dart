@@ -16,26 +16,30 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  //controllers para email e senha
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+  
+  // função de login
   void _login() async {
+    //valida os campos do formulário
     if (_formKey.currentState!.validate()) {
       String email = _emailController.text;
       String password = _passwordController.text;
-
+      //valida o email chamando a função de verificar o email
       bool emailValido = await EmailValidator.verificarEmail(
         context: context,
         email: email,
       );
       if (!emailValido) return;
 
+      // tenta autenticar o usuário com email e senha
       String? erro = await _autenticacaoServ.logarUser(
         email: email,
         password: password,
         context: context,
       );
-
+      // se tiver um errro chama uma snackbar que mostra esse erro
       if (erro != null) {
         showSnackBar(context: context, aviso: erro);
       }
@@ -192,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           padding: EdgeInsets.symmetric(vertical: 15),
                         ),
+                        //chama a função login
                         onPressed: _login,
                         child: Text(
                           "Login",

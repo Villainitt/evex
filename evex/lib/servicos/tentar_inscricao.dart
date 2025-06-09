@@ -19,14 +19,16 @@ Future<void> tentarInscricao (BuildContext context, Map<String, dynamic> dadosEv
       ),
     );
   }
+  //verifica se o usuário está autenticado
   if (user == null || user.email == null) {
     mostrarMensagem("Usuário não autenticado ou email inválido", Colors.red);
     return;
   }
-
+  //pega o nome e a matrícula do usuário
   final nome = user.displayName ?? 'Usuário';
   final matricula = await pegarMatricula();
 
+  //se a matrícula for nula mostra a mensagem
   if (matricula == null) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -41,14 +43,15 @@ Future<void> tentarInscricao (BuildContext context, Map<String, dynamic> dadosEv
   final dataEvento = dadosEvento['data'];
   final horarioEvento = dadosEvento['horario'];
 
+  //verifica se o usuário já esta inscrito em um evento no mesmo horário naquela data
   final conflito = await temConflitoDeHorario(matricula, dataEvento, horarioEvento);
 
-  if (conflito) {
+  if (conflito) { //mensagem de conflito
     mostrarMensagem("Você já está inscrito num evento nesse mesmo horário!", Colors.red);
     return;
   }
 
-  await verificarCapacidade(context, eventoId, matricula, nome);
+  await verificarCapacidade(context, eventoId, matricula, nome); //se não tiver conflito, segue para a verificação da capacidade
 }
 
                       

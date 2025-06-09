@@ -18,7 +18,7 @@ class AutenticacaoServ {
 }) async {
   final url = Uri.parse('https://email-api-v80f.onrender.com/cadastrarUsuario');
 
-  try {
+  try { //api verifica o domínio do email e o tipo de usuário
     
     final response = await http.post(
       url,
@@ -56,7 +56,7 @@ class AutenticacaoServ {
 
   Future<String?> logarUser({required String email, required String password, required BuildContext context}) async {
   try {
-    await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+    await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password); //loga o usuário
 
     Navigator.pushReplacement(
       context,
@@ -69,7 +69,7 @@ class AutenticacaoServ {
   }
 }
 
-  Future<void> deslogar() async{
+  Future<void> deslogar() async{ //desloga o usuário
     _firebaseAuth.signOut();
     print ("Usuário deslogado");
   }

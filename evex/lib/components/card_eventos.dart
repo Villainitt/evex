@@ -4,13 +4,15 @@ import 'package:evex/telas/detalhes.dart';
 import 'package:evex/servicos/modelo_relatorio.dart';
 import 'package:evex/servicos/status_evento.dart';
 
+
+//Widget que constrói o card dos eventos
 class CardEvento extends StatelessWidget {
-  final String nome;
-  final String local;
-  final String data;
-  final Map<String, dynamic> dadosEvento;
-  final void Function()? botaoCancelar;
-  final void Function()? botaoRelatorio;
+  final String nome; //nome do evento
+  final String local; //local evento
+  final String data; //data evento
+  final Map<String, dynamic> dadosEvento; //acessa os dados obtidos de determinado evento
+  final void Function()? botaoCancelar; //botão opicional 
+  final void Function()? botaoRelatorio; //botão opicional
 
   const CardEvento({
     required this.nome,
@@ -22,7 +24,7 @@ class CardEvento extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  bool podeCancelar() {
+  bool podeCancelar() { //verifica o horário, o evento só pode ser cancelado até 1h antes de seu início
     try {
       final dataStr = dadosEvento['data'];
       final horaStr = dadosEvento['horario'];
@@ -127,7 +129,8 @@ class CardEvento extends StatelessWidget {
                       child: Text(
                         "Cancelar inscrição",
                         style: TextStyle(
-                          color: cancelamentoAtivo ? Colors.red : Colors.white,
+                          color: cancelamentoAtivo ? Colors.red : Colors.white,//se o cancelamento estiver ativo ou inativo muda a cor 
+                          //do botão
                         ),
                       ),
                     ),
@@ -140,7 +143,7 @@ class CardEvento extends StatelessWidget {
                           () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder:
+                              builder: //apresenta o relatório do evento para o professor
                                   (_) => ModeloRelatorio(
                                     eventoId: dadosEvento['id'],
                                   ),
